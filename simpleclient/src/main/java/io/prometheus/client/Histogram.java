@@ -50,7 +50,7 @@ import java.util.Map;
  * {@link Histogram.Builder#exponentialBuckets(double, double, int) exponentialBuckets}
  * offer easy ways to set common bucket patterns.
  */
-public class Histogram extends SimpleCollector<Histogram.Child> {
+public class Histogram extends SimpleCollector<Histogram.Child> implements HistogramLike {
   double[] buckets;
 
   Histogram(Builder b) {
@@ -162,7 +162,7 @@ public class Histogram extends SimpleCollector<Histogram.Child> {
    * <em>Warning:</em> References to a Child become invalid after using
    * {@link SimpleCollector#remove} or {@link SimpleCollector#clear}.
    */
-  public static class Child {
+  public static class Child implements HistogramLike {
     public static class Value {
       private double sum;  
       private double[] buckets;
@@ -223,6 +223,7 @@ public class Histogram extends SimpleCollector<Histogram.Child> {
   /**
    * Observe the given amount on the histogram with no labels.
    */
+  @Override
   public void observe(double amt) {
     noLabelsChild.observe(amt);
   }
@@ -231,6 +232,7 @@ public class Histogram extends SimpleCollector<Histogram.Child> {
    * <p>
    * Call {@link Timer#observeDuration} at the end of what you want to measure the duration of.
    */
+  @Override
   public Timer startTimer() {
     return noLabelsChild.startTimer();
   }
