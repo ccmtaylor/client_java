@@ -60,7 +60,7 @@ import java.util.Map;
  * These can be aggregated and processed together much more easily in the Prometheus 
  * server than individual metrics for each labelset.
  */
-public class Gauge extends SimpleCollector<Gauge.Child> {
+public class Gauge extends SimpleCollector<Gauge.Child> implements GaugeLike {
   
   Gauge(Builder b) {
     super(b);
@@ -112,7 +112,7 @@ public class Gauge extends SimpleCollector<Gauge.Child> {
    * <em>Warning:</em> References to a Child become invalid after using
    * {@link SimpleCollector#remove} or {@link SimpleCollector#clear},
    */
-  public static class Child {
+  public static class Child implements GaugeLike {
     private DoubleAdder value = new DoubleAdder();
 
     static TimeProvider timeProvider = new TimeProvider();
@@ -184,36 +184,42 @@ public class Gauge extends SimpleCollector<Gauge.Child> {
   /**
    * Increment the gauge with no labels by 1.
    */
+  @Override
   public void inc() {
     inc(1);
   }
   /**
    * Increment the gauge with no labels by the given amount.
    */
+  @Override
   public void inc(double amt) {
     noLabelsChild.inc(amt);
   }
   /**
    * Increment the gauge with no labels by 1.
    */
+  @Override
   public void dec() {
     dec(1);
   }
   /**
    * Decrement the gauge with no labels by the given amount.
    */
+  @Override
   public void dec(double amt) {
     noLabelsChild.dec(amt);
   }
   /**
    * Set the gauge with no labels to the given value.
    */
+  @Override
   public void set(double val) {
     noLabelsChild.set(val);
   }
   /**
    * Set the gauge with no labels to the current unixtime.
    */
+  @Override
   public void setToCurrentTime() {
     noLabelsChild.setToCurrentTime();
   }
@@ -226,6 +232,7 @@ public class Gauge extends SimpleCollector<Gauge.Child> {
    * <p>
    * Call {@link Timer#setDuration} at the end of what you want to measure the duration of.
    */
+  @Override
   public Timer startTimer() {
     return noLabelsChild.startTimer();
   }
