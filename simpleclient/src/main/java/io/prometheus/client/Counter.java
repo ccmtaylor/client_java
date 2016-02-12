@@ -64,7 +64,7 @@ import java.util.Map;
  * These can be aggregated and processed together much more easily in the Promtheus 
  * server than individual metrics for each labelset.
  */
-public class Counter extends SimpleCollector<Counter.Child> {
+public class Counter extends SimpleCollector<Counter.Child> implements CounterLike {
 
   Counter(Builder b) {
     super(b);
@@ -95,7 +95,7 @@ public class Counter extends SimpleCollector<Counter.Child> {
    * <em>Warning:</em> References to a Child become invalid after using
    * {@link SimpleCollector#remove} or {@link SimpleCollector#clear},
    */
-  public static class Child {
+  public static class Child implements CounterLike {
     private DoubleAdder value = new DoubleAdder();
     /**
      * Increment the counter by 1.
@@ -125,6 +125,7 @@ public class Counter extends SimpleCollector<Counter.Child> {
   /**
    * Increment the counter with no labels by 1.
    */
+  @Override
   public void inc() {
     inc(1);
   }
@@ -132,6 +133,7 @@ public class Counter extends SimpleCollector<Counter.Child> {
    * Increment the counter with no labels by the given amount.
    * @throws IllegalArgumentException If amt is negative.
    */
+  @Override
   public void inc(double amt) {
     noLabelsChild.inc(amt);
   }
