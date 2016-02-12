@@ -37,7 +37,7 @@ import java.util.Map;
  * </pre>
  * This would allow you to track request rate, average latency and average request size.
  */
-public class Summary extends SimpleCollector<Summary.Child> {
+public class Summary extends SimpleCollector<Summary.Child> implements SummaryLike {
 
   Summary(Builder b) {
     super(b);
@@ -89,7 +89,7 @@ public class Summary extends SimpleCollector<Summary.Child> {
    * <em>Warning:</em> References to a Child become invalid after using
    * {@link SimpleCollector#remove} or {@link SimpleCollector#clear}.
    */
-  public static class Child {
+  public static class Child implements SummaryLike {
     public static class Value {
       private double count;  
       private double sum;
@@ -135,6 +135,7 @@ public class Summary extends SimpleCollector<Summary.Child> {
   /**
    * Observe the given amount on the summary with no labels.
    */
+  @Override
   public void observe(double amt) {
     noLabelsChild.observe(amt);
   }
@@ -143,6 +144,7 @@ public class Summary extends SimpleCollector<Summary.Child> {
    * <p>
    * Call {@link Timer#observeDuration} at the end of what you want to measure the duration of.
    */
+  @Override
   public Timer startTimer() {
     return noLabelsChild.startTimer();
   }
